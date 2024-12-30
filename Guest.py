@@ -67,7 +67,7 @@ class GuestPage:
         brandlogo.image = photo
         brandlogo.place(x=1085, y=83)
 
-        heading = Label(homepage, text='© GIDE0NS C0FFEE SH0P', bg='black', fg='#ff6c38', font=("yu gothic ui", 19, "bold"))
+        heading = Label(homepage, text='© GARAGE C0FFEE SH0P', bg='black', fg='#ff6c38', font=("yu gothic ui", 19, "bold"))
         heading.place(x=770, y=90)
 
         heading2 = Label(homepage, text='Trending', bg='black', fg='#ff6c38', font=("", 19, "bold"))
