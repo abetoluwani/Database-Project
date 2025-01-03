@@ -28,14 +28,14 @@ class InventoryPage:
         account_window.title("Coffee Management System")
 
         # window Icon
-        # icon = PhotoImage(file='images/CoffeeShop-brand-logo.png')
-        # account_window.iconphoto(True, icon)
+        icon = PhotoImage(file='images/CoffeeShop-brand-logo.png')
+        account_window.iconphoto(True, icon)
 
         account_window.config(background='#f6f6f9')
 
         # ====== MENU BAR ==========
-        # logoIcon = Image.open('images/CoffeeShop-brand-logo.png')
-        # photo = ImageTk.PhotoImage(logoIcon)
+        logoIcon = Image.open('images/CoffeeShop-brand-logo.png')
+        photo = ImageTk.PhotoImage(logoIcon)
         logo = Label(account_window, image=photo, bg='#f6f6f9')
         logo.image = photo
         logo.place(x=0, y=0)

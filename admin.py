@@ -405,6 +405,7 @@ class SecondPage:
                         conn.close()
                         show_all()
                         messagebox.showinfo("Success", "Coffee Records Added Successfully")
+                        clear_all()
 
                 def delete_records():
                     try:
@@ -443,6 +444,7 @@ class SecondPage:
                     show_all()
                     # self.Reset()
                     messagebox.showinfo("Success", "Coffee Record updated Successfully")
+                    clear_all()
 
                 self.button3 = Button(coverFrame3)
                 self.button3.place(relx=0.539, rely=0.849, width=86, height=25)
