@@ -301,19 +301,31 @@ class SecondPage:
                 typeLabel = Label(coverFrame3, text="TYPE", bg='#ffffff', font=("yu gothic ui", 12, "bold"))
                 typeLabel.place(x=90, y=105)
 
-                typeName_entry = Entry(coverFrame3, highlightthickness=2, relief=FLAT, bg="#ffffff", fg="#6b6a69",
-                                       font=("", 12, 'bold'), textvariable=type)
+                type_var = StringVar()
+                type_options = ["free", "giveaway", "purchase"]
+                typeName_entry = ttk.Combobox(coverFrame3, textvariable=type_var, values=type_options)
                 typeName_entry.place(x=10, y=135, width=225, height=34)
-                typeName_entry.config(highlightbackground="#6b6a69", highlightcolor="#ff6c38")
+                typeName_entry.config(state="readonly")  # Set the state of the type dropdown to 'readonly'
+
+                def update_discount_options(event):
+                    selected_type = type_var.get()
+                    if selected_type == "free":
+                        discount_var.set(0)
+                        discount_dropdown.config(state="disabled")
+                    else:
+                        discount_dropdown.config(state="normal")
+
+                typeName_entry.bind("<<ComboboxSelected>>", update_discount_options)
 
                 # COFFEE DISCOUNT AND ENTRY
                 discountLabel = Label(coverFrame3, text="DISCOUNT", bg='#ffffff', font=("yu gothic ui", 12, "bold"))
                 discountLabel.place(x=90, y=170)
 
-                discountName_entry = Entry(coverFrame3, highlightthickness=2, relief=FLAT, bg="#ffffff", fg="#6b6a69",
-                                         font=("", 12, 'bold'), textvariable=discount)
-                discountName_entry.place(x=10, y=200, width=225, height=34)
-                discountName_entry.config(highlightbackground="#6b6a69", highlightcolor="#ff6c38")
+                discount_var = IntVar()
+                discount_options = [0, 25, 50, 100]
+                discount_dropdown = ttk.Combobox(coverFrame3, textvariable=discount_var, values=discount_options)
+                discount_dropdown.place(x=10, y=200, width=225, height=34)
+                discount_dropdown.config(state="disabled")
 
                 # IN STOCK AND ENTRY
                 inStockLabel = Label(coverFrame3, text="IN STOCK", bg='#ffffff', font=("yu gothic ui", 12, "bold"))
@@ -388,7 +400,7 @@ class SecondPage:
                         conn = sqlite3.connect("./Database/CoffeeShop.db")
                         cur = conn.cursor()
                         cur.execute("INSERT INTO Coffee_Category(coffee_id, coffee_name, type, discount, in_stock, coffee_price) VALUES(?,?,?,?,?,?)",
-                                    (coffee_id, coffee.get(), type.get(), discount.get(), in_stock.get(), price.get()))
+                                    (coffee_id, coffee.get(), type_var.get(), discount_var.get(), in_stock.get(), price.get()))
                         conn.commit()
                         conn.close()
                         show_all()
@@ -425,7 +437,7 @@ class SecondPage:
                     cur.execute(
                         "UPDATE Coffee_Category set coffee_name=?,type=?,discount=?,in_stock=?,coffee_price=? where "
                         "coffee_id=?",
-                        (coffee.get(), type.get(), discount.get(), in_stock.get(), price.get(), coffee_id.get()))
+                        (coffee.get(), type_var.get(), discount_var.get(), in_stock.get(), price.get(), coffee_id.get()))
                     conn.commit()
                     conn.close()
                     show_all()
@@ -474,8 +486,8 @@ class SecondPage:
                 def clear_all():
                     coffee_id.set("")
                     coffee.set("")
-                    type.set("")
-                    discount.set("")
+                    type_var.set("")
+                    discount_var.set("")
                     in_stock.set("")
                     price.set("")
 
