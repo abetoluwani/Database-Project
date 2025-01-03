@@ -1,0 +1,19 @@
+digraph CoffeeShopDatabase {
+    // Node definitions
+    node [shape=record, style=filled, fillcolor=lightblue];
+    
+    Admin_Account [label="{Admin_Account|+ admin_id : int (PK)\l+ admin_fullname : string\l+ admin_username : string\l+ admin_password : string\l}"];
+    
+    Employee_Account [label="{Employee_Account|+ employee_id : int (PK)\l+ employee_fullname : string\l+ employee_username : string\l+ employee_password : string\l}"];
+    
+    Guest_Account [label="{Guest_Account|+ guest_id : int (PK)\l+ guest_fullname : string\l+ guest_username : string\l+ guest_password : string\l}"];
+    
+    Coffee_Category [label="{Coffee_Category|+ coffee_id : int (PK)\l+ coffee_name : string\l+ type : string\l+ discount : int\l+ in_stock : int\l+ coffee_price : int\l}"];
+    
+    Inventory [label="{Inventory|+ bill_number : string (PK)\l+ date : string\l+ cashier_name : string\l+ contact : int\l+ bill_details : string\l}"];
+
+    // Relationship edges
+    Admin_Account -> Employee_Account [label="manages", style=dashed];
+    Guest_Account -> Inventory [label="creates", style=dotted];
+    Coffee_Category -> Inventory [label="tracks", style=dotted];
+}
