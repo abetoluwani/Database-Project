@@ -1,0 +1,76 @@
+digraph CoffeeShop {
+    rankdir=LR;
+    splines=polyline;
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=8];
+    
+    // Entity Nodes
+    node [shape=none, margin=0];
+    
+    Admin [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+            <TR><TD COLSPAN="3" BGCOLOR="#4A90E2" PORT="header"><FONT COLOR="white"><B>Admin</B></FONT></TD></TR>
+            <TR><TD PORT="pk" BGCOLOR="#E8F0FE">🔑</TD><TD BGCOLOR="#E8F0FE">ID</TD><TD BGCOLOR="#E8F0FE">int</TD></TR>
+            <TR><TD> </TD><TD>fullname</TD><TD>varchar(255)</TD></TR>
+            <TR><TD> </TD><TD>username</TD><TD>varchar(50)</TD></TR>
+            <TR><TD> </TD><TD>password</TD><TD>varchar(255)</TD></TR>
+            <TR><TD> </TD><TD>Last_Update</TD><TD>datetime</TD></TR>
+        </TABLE>>];
+    
+    Employee [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+            <TR><TD COLSPAN="3" BGCOLOR="#4A90E2" PORT="header"><FONT COLOR="white"><B>Employee</B></FONT></TD></TR>
+            <TR><TD PORT="pk" BGCOLOR="#E8F0FE">🔑</TD><TD BGCOLOR="#E8F0FE">ID</TD><TD BGCOLOR="#E8F0FE">int</TD></TR>
+            <TR><TD> </TD><TD>fullname</TD><TD>varchar(255)</TD></TR>
+            <TR><TD> </TD><TD>username</TD><TD>varchar(50)</TD></TR>
+            <TR><TD> </TD><TD>password</TD><TD>varchar(255)</TD></TR>
+            <TR><TD> </TD><TD>Last_Update</TD><TD>datetime</TD></TR>
+        </TABLE>>];
+    
+    Guest [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+            <TR><TD COLSPAN="3" BGCOLOR="#4A90E2" PORT="header"><FONT COLOR="white"><B>Guest</B></FONT></TD></TR>
+            <TR><TD PORT="pk" BGCOLOR="#E8F0FE">🔑</TD><TD BGCOLOR="#E8F0FE">ID</TD><TD BGCOLOR="#E8F0FE">int</TD></TR>
+            <TR><TD> </TD><TD>fullname</TD><TD>varchar(255)</TD></TR>
+            <TR><TD> </TD><TD>username</TD><TD>varchar(50)</TD></TR>
+            <TR><TD> </TD><TD>password</TD><TD>varchar(255)</TD></TR>
+            <TR><TD> </TD><TD>Last_Update</TD><TD>datetime</TD></TR>
+        </TABLE>>];
+    
+    Coffee [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+            <TR><TD COLSPAN="3" BGCOLOR="#4A90E2" PORT="header"><FONT COLOR="white"><B>Coffee</B></FONT></TD></TR>
+            <TR><TD PORT="pk" BGCOLOR="#E8F0FE">🔑</TD><TD BGCOLOR="#E8F0FE">ID</TD><TD BGCOLOR="#E8F0FE">int</TD></TR>
+            <TR><TD> </TD><TD>name</TD><TD>varchar(50)</TD></TR>
+            <TR><TD> </TD><TD>type</TD><TD>varchar(25)</TD></TR>
+            <TR><TD> </TD><TD>discount</TD><TD>int</TD></TR>
+            <TR><TD> </TD><TD>in_stock</TD><TD>int</TD></TR>
+            <TR><TD> </TD><TD>price</TD><TD>int</TD></TR>
+            <TR><TD> </TD><TD>Last_Update</TD><TD>datetime</TD></TR>
+        </TABLE>>];
+    
+    Inventory [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4">
+            <TR><TD COLSPAN="3" BGCOLOR="#4A90E2" PORT="header"><FONT COLOR="white"><B>Inventory</B></FONT></TD></TR>
+            <TR><TD PORT="pk" BGCOLOR="#E8F0FE">🔑</TD><TD BGCOLOR="#E8F0FE">bill_number</TD><TD BGCOLOR="#E8F0FE">varchar(20)</TD></TR>
+            <TR><TD> </TD><TD>date</TD><TD>datetime</TD></TR>
+            <TR><TD> </TD><TD>cashier_name</TD><TD>varchar(50)</TD></TR>
+            <TR><TD> </TD><TD>contact</TD><TD>int</TD></TR>
+            <TR><TD> </TD><TD>bill_details</TD><TD>text</TD></TR>
+            <TR><TD PORT="fk1">🔗</TD><TD>CoffeeID</TD><TD>int</TD></TR>
+            <TR><TD PORT="fk2">🔗</TD><TD>GuestID</TD><TD>int</TD></TR>
+            <TR><TD PORT="fk3">🔗</TD><TD>EmployeeID</TD><TD>int</TD></TR>
+        </TABLE>>];
+    
+    // Relationship edges
+    edge [dir=forward, arrowhead=crow, color="#666666", penwidth=1.5];
+    
+    Admin:pk -> Employee:header [label=" manages"];
+    Guest:pk -> Inventory:fk2 [label=" creates"];
+    Coffee:pk -> Inventory:fk1 [label=" contains"];
+    Employee:pk -> Inventory:fk3 [label=" processes"];
+    
+    // Layout
+    {rank=same; Admin Employee Guest}
+    {rank=same; Coffee Inventory}
+}

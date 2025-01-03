@@ -1,0 +1,51 @@
+digraph CoffeeShop {
+    rankdir=LR;
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=8];
+    
+    // Table Nodes
+    node [shape=record, style=filled];
+    
+    Admin_Account [
+        fillcolor="#E6F3FF",
+        label="{Admin_Account|ID : int\ladmin_fullname : varchar(255)\ladmin_username : varchar(50)\ladmin_password : varchar(255)\lLast_Update : datetime}"
+    ];
+    
+    Employee_Account [
+        fillcolor="#E6F3FF",
+        label="{Employee_Account|ID : int\lemployee_fullname : varchar(255)\lemployee_username : varchar(50)\lemployee_password : varchar(255)\lLast_Update : datetime}"
+    ];
+    
+    Guest_Account [
+        fillcolor="#E6F3FF",
+        label="{Guest_Account|ID : int\lguest_fullname : varchar(255)\lguest_username : varchar(50)\lguest_password : varchar(255)\lLast_Update : datetime}"
+    ];
+    
+    Coffee_Category [
+        fillcolor="#FFFFD1",
+        label="{Coffee_Category|ID : int\lcoffee_name : varchar(50)\ltype : varchar(25)\ldiscount : int\lin_stock : int\lcoffee_price : int\lLast_Update : datetime}"
+    ];
+    
+    Inventory [
+        fillcolor="#D1FFD1",
+        label="{Inventory|bill_number : varchar(20)\ldate : datetime\lcashier_name : varchar(50)\lcontact : int\lbill_details : text\lCoffeeID : int\lGuestID : int\lEmployeeID : int}"
+    ];
+    
+    // Relationships using arrows
+    edge [dir=both, arrowhead=crow, arrowtail=none, color="#666666"];
+    
+    Admin_Account -> Employee_Account [label="manages"];
+    Guest_Account -> Inventory [label="creates"];
+    Coffee_Category -> Inventory [label="contains"];
+    Employee_Account -> Inventory [label="processes"];
+    
+    // Add foreign key references
+    edge [dir=forward, arrowhead=normal, style=dashed, color="#999999"];
+    Inventory -> Coffee_Category [label="CoffeeID references ID"];
+    Inventory -> Guest_Account [label="GuestID references ID"];
+    Inventory -> Employee_Account [label="EmployeeID references ID"];
+    
+    // Layout hints
+    {rank=same; Admin_Account Employee_Account Guest_Account}
+    {rank=same; Coffee_Category Inventory}
+}

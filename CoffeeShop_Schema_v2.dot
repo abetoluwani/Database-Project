@@ -1,0 +1,75 @@
+digraph CoffeeShop {
+    rankdir=TB;
+    splines=ortho;
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=8];
+    
+    // Table Nodes
+    node [shape=none, margin=0];
+    
+    Admin_Account [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#E6F3FF">
+            <TR><TD PORT="title" BGCOLOR="#B0C4DE"><B>Admin_Account</B></TD></TR>
+            <TR><TD PORT="id" ALIGN="LEFT">ID : int (PK)</TD></TR>
+            <TR><TD ALIGN="LEFT">admin_fullname : varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">admin_username : varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">admin_password : varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">Last_Update : datetime</TD></TR>
+        </TABLE>>];
+    
+    Employee_Account [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#E6F3FF">
+            <TR><TD PORT="title" BGCOLOR="#B0C4DE"><B>Employee_Account</B></TD></TR>
+            <TR><TD PORT="id" ALIGN="LEFT">ID : int (PK)</TD></TR>
+            <TR><TD ALIGN="LEFT">employee_fullname : varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">employee_username : varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">employee_password : varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">Last_Update : datetime</TD></TR>
+        </TABLE>>];
+    
+    Guest_Account [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#E6F3FF">
+            <TR><TD PORT="title" BGCOLOR="#B0C4DE"><B>Guest_Account</B></TD></TR>
+            <TR><TD PORT="id" ALIGN="LEFT">ID : int (PK)</TD></TR>
+            <TR><TD ALIGN="LEFT">guest_fullname : varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">guest_username : varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">guest_password : varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">Last_Update : datetime</TD></TR>
+        </TABLE>>];
+    
+    Coffee_Category [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#FFFFD1">
+            <TR><TD PORT="title" BGCOLOR="#DAD870"><B>Coffee_Category</B></TD></TR>
+            <TR><TD PORT="id" ALIGN="LEFT">ID : int (PK)</TD></TR>
+            <TR><TD ALIGN="LEFT">coffee_name : varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">type : varchar(25)</TD></TR>
+            <TR><TD ALIGN="LEFT">discount : int</TD></TR>
+            <TR><TD ALIGN="LEFT">in_stock : int</TD></TR>
+            <TR><TD ALIGN="LEFT">coffee_price : int</TD></TR>
+            <TR><TD ALIGN="LEFT">Last_Update : datetime</TD></TR>
+        </TABLE>>];
+    
+    Inventory [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#D1FFD1">
+            <TR><TD PORT="title" BGCOLOR="#90EE90"><B>Inventory</B></TD></TR>
+            <TR><TD PORT="id" ALIGN="LEFT">bill_number : varchar(20) (PK)</TD></TR>
+            <TR><TD ALIGN="LEFT">date : datetime</TD></TR>
+            <TR><TD ALIGN="LEFT">cashier_name : varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">contact : int</TD></TR>
+            <TR><TD ALIGN="LEFT">bill_details : text</TD></TR>
+            <TR><TD PORT="coffee_fk" ALIGN="LEFT">CoffeeID : int (FK)</TD></TR>
+            <TR><TD PORT="guest_fk" ALIGN="LEFT">GuestID : int (FK)</TD></TR>
+            <TR><TD PORT="emp_fk" ALIGN="LEFT">EmployeeID : int (FK)</TD></TR>
+        </TABLE>>];
+    
+    // Relationships
+    edge [dir=both, arrowhead=crow, arrowtail=none, color="#666666"];
+    Admin_Account:id -> Employee_Account:title [label="manages"];
+    Guest_Account:id -> Inventory:guest_fk [label="creates"];
+    Coffee_Category:id -> Inventory:coffee_fk [label="contains"];
+    Employee_Account:id -> Inventory:emp_fk [label="processes"];
+    
+    // Layout
+    {rank=same; Admin_Account Employee_Account Guest_Account}
+    {rank=same; Coffee_Category Inventory}
+}

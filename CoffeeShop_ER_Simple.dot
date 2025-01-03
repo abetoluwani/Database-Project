@@ -1,0 +1,26 @@
+digraph CoffeeShop {
+    // Basic graph settings
+    rankdir=LR;
+    node [shape=record, fontsize=10];
+    
+    // Entities
+    Admin [label="{Admin|+ ID (PK): int\l+ fullname: varchar(255)\l+ username: varchar(50)\l+ password: varchar(255)\l+ Last_Update: datetime\l}"];
+    
+    Employee [label="{Employee|+ ID (PK): int\l+ fullname: varchar(255)\l+ username: varchar(50)\l+ password: varchar(255)\l+ Last_Update: datetime\l}"];
+    
+    Guest [label="{Guest|+ ID (PK): int\l+ fullname: varchar(255)\l+ username: varchar(50)\l+ password: varchar(255)\l+ Last_Update: datetime\l}"];
+    
+    Coffee [label="{Coffee|+ ID (PK): int\l+ name: varchar(50)\l+ type: varchar(25)\l+ discount: int\l+ in_stock: int\l+ price: int\l+ Last_Update: datetime\l}"];
+    
+    Inventory [label="{Inventory|+ bill_number (PK): varchar(20)\l+ date: datetime\l+ cashier_name: varchar(50)\l+ contact: int\l+ bill_details: text\l+ CoffeeID (FK): int\l+ GuestID (FK): int\l+ EmployeeID (FK): int\l}"];
+    
+    // Relationships with correct arrow types
+    Admin -> Employee [arrowhead=crow, label="manages"];
+    Guest -> Inventory [arrowhead=crow, label="creates"];
+    Coffee -> Inventory [arrowhead=crow, label="contains"];
+    Employee -> Inventory [arrowhead=crow, label="processes"];
+    
+    // Layout
+    {rank=same; Admin Employee Guest}
+    {rank=same; Coffee Inventory}
+}

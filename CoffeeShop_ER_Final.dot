@@ -1,0 +1,89 @@
+digraph CoffeeShop {
+    rankdir=TB;
+    splines=ortho;
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=8];
+    
+    // Entity Nodes
+    node [shape=none, margin=0];
+    
+    Admin [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#FFE6CC">
+            <TR><TD PORT="title" BGCOLOR="#FFB366"><B>Admin</B></TD></TR>
+            <TR><TD PORT="id" ALIGN="LEFT">ID : int</TD></TR>
+            <TR><TD ALIGN="LEFT">fullname : varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">username : varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">password : varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">Last_UWarning: Arrow type "both" unknown - ignoring
+Warning: Arrow type "both" unknown - ignoringpdate : datetime</TD></TR>
+        </TABLE>>];
+    
+    Employee [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#E6FFCC">
+            <TR><TD PORT="title" BGCOLOR="#B3FF66"><B>Employee</B></TD></TR>
+            <TR><TD PORT="id" ALIGN="LEFT">ID : int</TD></TR>
+            <TR><TD ALIGN="LEFT">fullname : varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">username : varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">password : varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">Last_Update : datetime</TD></TR>
+        </TABLE>>];
+    
+    Guest [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#CCE6FF">
+            <TR><TD PORT="title" BGCOLOR="#66B3FF"><B>Guest</B></TD></TR>
+            <TR><TD PORT="id" ALIGN="LEFT">ID : int</TD></TR>
+            <TR><TD ALIGN="LEFT">fullname : varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">username : varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">password : varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">Last_Update : datetime</TD></TR>
+        </TABLE>>];
+    
+    Coffee [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#FFE6E6">
+            <TR><TD PORT="title" BGCOLOR="#FFB3B3"><B>Coffee</B></TD></TR>
+            <TR><TD PORT="id" ALIGN="LEFT">ID : int</TD></TR>
+            <TR><TD ALIGN="LEFT">name : varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">type : varchar(25)</TD></TR>
+            <TR><TD ALIGN="LEFT">discount : int</TD></TR>
+            <TR><TD ALIGN="LEFT">in_stock : int</TD></TR>
+            <TR><TD ALIGN="LEFT">price : int</TD></TR>
+            <TR><TD ALIGN="LEFT">Last_Update : datetime</TD></TR>
+        </TABLE>>];
+    
+    Inventory [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0" CELLPADDING="4" BGCOLOR="#E6FFE6">
+            <TR><TD PORT="title" BGCOLOR="#99FF99"><B>Inventory</B></TD></TR>
+            <TR><TD PORT="id" ALIGN="LEFT">bill_number : varchar(20)</TD></TR>
+            <TR><TD ALIGN="LEFT">date : datetime</TD></TR>
+            <TR><TD ALIGN="LEFT">cashier_name : varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">contact : int</TD></TR>
+            <TR><TD ALIGN="LEFT">bill_details : text</TD></TR>
+            <TR><TD PORT="coffee_fk" ALIGN="LEFT">CoffeeID : int</TD></TR>
+            <TR><TD PORT="guest_fk" ALIGN="LEFT">GuestID : int</TD></TR>
+            <TR><TD PORT="emp_fk" ALIGN="LEFT">EmployeeID : int</TD></TR>
+        </TABLE>>];
+    
+    // Relationship edges
+    edge [dir=both, arrowhead=crow, arrowtail=none, color="#666666"];
+    
+    // Admin manages Employees (1:N)
+    Admin:id -> Employee:title [label="manages"];
+    
+    // Guest creates Inventory (1:N)
+    Guest:id -> Inventory:guest_fk [label="creates"];
+    
+    // Coffee contained in Inventory (M:N)
+    Coffee:id -> Inventory:coffee_fk [label="contains"];
+    
+    // Employee processes Inventory (1:N)
+    Employee:id -> Inventory:emp_fk [label="processes"];
+    
+    // Layout
+    {rank=same; Admin Employee Guest}
+    {rank=same; Coffee Inventory}
+    
+    // Add invisible edges for better layout
+    edge [style=invis];
+    Admin -> Employee -> Guest [constraint=false];
+    Coffee -> Inventory [constraint=false];
+}

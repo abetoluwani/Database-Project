@@ -364,14 +364,31 @@ class SecondPage:
                     in_stock.set(row[4])
                     price.set(row[5])
 
+                def get_next_coffee_id():
+                    conn = sqlite3.connect("./Database/CoffeeShop.db")
+                    cur = conn.cursor()
+                    cur.execute("SELECT coffee_id FROM Coffee_Category ORDER BY coffee_id")
+                    ids = cur.fetchall()
+                    conn.close()
+                    if not ids:
+                        return 1
+                    last_id = 0
+                    for id_tuple in ids:
+                        current_id = id_tuple[0]
+                        if current_id != last_id + 1:
+                            return last_id + 1
+                        last_id = current_id
+                    return last_id + 1
+
                 def add_coffee():
-                    if coffee_id.get() == "":
-                        messagebox.showerror("Failed", "Coffee Number( # ) can't be empty")
+                    if coffee.get() == "":
+                        messagebox.showerror("Failed", "Coffee Name can't be empty")
                     else:
+                        coffee_id = get_next_coffee_id()
                         conn = sqlite3.connect("./Database/CoffeeShop.db")
                         cur = conn.cursor()
-                        cur.execute("INSERT INTO Coffee_Category values(?,?,?,?,?,?)",
-                                    (coffee_id.get(), coffee.get(), type.get(), discount.get(), in_stock.get(), price.get()))
+                        cur.execute("INSERT INTO Coffee_Category(coffee_id, coffee_name, type, discount, in_stock, coffee_price) VALUES(?,?,?,?,?,?)",
+                                    (coffee_id, coffee.get(), type.get(), discount.get(), in_stock.get(), price.get()))
                         conn.commit()
                         conn.close()
                         show_all()
@@ -1390,9 +1407,9 @@ class SecondPage:
                             with sqlite3.connect("./Database/CoffeeShop.db") as db:
                                 cur = db.cursor()
                             insert = (
-                                "INSERT INTO Inventory(bill_number, date, cashier_name, contact, bill_details) VALUES(?,?,?,?,?)"
+                                "INSERT INTO Inventory(date, cashier_name, contact, bill_details) VALUES(?,?,?,?)"
                             )
-                            cur.execute(insert, [cust_new_bill.get(), bill_date.get(), cust_name.get(), cust_num.get(), self.Scrolledtext1.get('1.0', END)])
+                            cur.execute(insert, [bill_date.get(), cust_name.get(), cust_num.get(), self.Scrolledtext1.get('1.0', END)])
                             db.commit()
                             #print(self.cart.items)
                             print(self.cart.allCart())

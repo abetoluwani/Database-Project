@@ -1,0 +1,82 @@
+digraph CoffeeShop {
+    rankdir=LR;
+    node [fontname="Arial", fontsize=10];
+    edge [fontname="Arial", fontsize=8];
+    
+    // Entity Nodes (Green rectangles)
+    node [shape=box, style=filled, fillcolor="#98FB98"];
+    Admin_Account [label="Admin\nAccount"];
+    Employee_Account [label="Employee\nAccount"];
+    Guest_Account [label="Guest\nAccount"];
+    Coffee_Category [label="Coffee\nCategory"];
+    Inventory [label="Inventory"];
+    
+    // Relationship Nodes (Blue diamonds)
+    node [shape=diamond, style=filled, fillcolor="#87CEEB"];
+    Manages [label="Manages"];
+    Creates [label="Creates"];
+    Contains [label="Contains"];
+    Processes [label="Processes"];
+    
+    // Attribute Nodes (Pink ellipses)
+    node [shape=ellipse, style=filled, fillcolor="#FFB6C1"];
+    
+    // Admin Attributes
+    admin_id [label="admin_id\n(PK)"];
+    admin_fullname [label="fullname"];
+    admin_username [label="username"];
+    admin_password [label="password"];
+    
+    // Employee Attributes
+    emp_id [label="employee_id\n(PK)"];
+    emp_fullname [label="fullname"];
+    emp_username [label="username"];
+    emp_password [label="password"];
+    
+    // Guest Attributes
+    guest_id [label="guest_id\n(PK)"];
+    guest_fullname [label="fullname"];
+    guest_username [label="username"];
+    guest_password [label="password"];
+    
+    // Coffee Attributes
+    coffee_id [label="coffee_id\n(PK)"];
+    coffee_name [label="name"];
+    coffee_type [label="type"];
+    coffee_discount [label="discount"];
+    coffee_stock [label="in_stock"];
+    coffee_price [label="price"];
+    
+    // Inventory Attributes
+    bill_number [label="bill_number\n(PK)"];
+    inv_date [label="date"];
+    cashier_name [label="cashier"];
+    contact [label="contact"];
+    bill_details [label="details"];
+    
+    // Entity-Attribute Connections
+    edge [dir=none, color="#000000"];
+    Admin_Account -> {admin_id admin_fullname admin_username admin_password};
+    Employee_Account -> {emp_id emp_fullname emp_username emp_password};
+    Guest_Account -> {guest_id guest_fullname guest_username guest_password};
+    Coffee_Category -> {coffee_id coffee_name coffee_type coffee_discount coffee_stock coffee_price};
+    Inventory -> {bill_number inv_date cashier_name contact bill_details};
+    
+    // Entity-Relationship Connections
+    edge [dir=both, color="#000000"];
+    Admin_Account -> Manages [label="1"];
+    Manages -> Employee_Account [label="N"];
+    
+    Guest_Account -> Creates [label="1"];
+    Creates -> Inventory [label="N"];
+    
+    Coffee_Category -> Contains [label="M"];
+    Contains -> Inventory [label="N"];
+    
+    Employee_Account -> Processes [label="1"];
+    Processes -> Inventory [label="N"];
+    
+    // Rank settings for better layout
+    {rank=same; Admin_Account Employee_Account Guest_Account}
+    {rank=same; Coffee_Category Inventory}
+}

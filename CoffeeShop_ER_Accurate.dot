@@ -1,0 +1,66 @@
+digraph CoffeeShop {
+    rankdir=LR;
+    node [shape=none];
+    
+    // Entities
+    Admin_Account [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD BGCOLOR="#4A90E2"><FONT COLOR="white"><B>Admin_Account</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT">+ admin_id (PK)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ admin_fullname</TD></TR>
+            <TR><TD ALIGN="LEFT">+ admin_username</TD></TR>
+            <TR><TD ALIGN="LEFT">+ admin_password</TD></TR>
+        </TABLE>>];
+    
+    Employee_Account [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD BGCOLOR="#4A90E2"><FONT COLOR="white"><B>Employee_Account</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT">+ employee_id (PK)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ employee_fullname</TD></TR>
+            <TR><TD ALIGN="LEFT">+ employee_username</TD></TR>
+            <TR><TD ALIGN="LEFT">+ employee_password</TD></TR>
+        </TABLE>>];
+    
+    Guest_Account [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD BGCOLOR="#4A90E2"><FONT COLOR="white"><B>Guest_Account</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT">+ guest_fullname</TD></TR>
+            <TR><TD ALIGN="LEFT">+ guest_username</TD></TR>
+            <TR><TD ALIGN="LEFT">+ guest_password</TD></TR>
+        </TABLE>>];
+    
+    Coffee_Category [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD BGCOLOR="#4A90E2"><FONT COLOR="white"><B>Coffee_Category</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT">+ coffee_id (PK)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ coffee_name</TD></TR>
+            <TR><TD ALIGN="LEFT">+ type</TD></TR>
+            <TR><TD ALIGN="LEFT">+ discount</TD></TR>
+            <TR><TD ALIGN="LEFT">+ in_stock</TD></TR>
+            <TR><TD ALIGN="LEFT">+ price</TD></TR>
+        </TABLE>>];
+    
+    Inventory [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD BGCOLOR="#4A90E2"><FONT COLOR="white"><B>Inventory</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT">+ bill_number (PK)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ date</TD></TR>
+            <TR><TD ALIGN="LEFT">+ cashier_name</TD></TR>
+            <TR><TD ALIGN="LEFT">+ contact</TD></TR>
+            <TR><TD ALIGN="LEFT">+ bill_details</TD></TR>
+            <TR><TD ALIGN="LEFT">+ CoffeeID (FK)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ GuestID (FK)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ EmployeeID (FK)</TD></TR>
+        </TABLE>>];
+    
+    // Relationships
+    edge [arrowhead=crow];
+    Admin_Account -> Employee_Account [label="one admin manages many employees"];
+    Guest_Account -> Inventory [label="one guest creates many orders"];
+    Coffee_Category -> Inventory [label="one coffee type in many orders"];
+    Employee_Account -> Inventory [label="one employee processes many orders"];
+    
+    // Layout
+    {rank=same; Admin_Account Employee_Account Guest_Account}
+    {rank=same; Coffee_Category Inventory}
+}

@@ -1,0 +1,71 @@
+digraph CoffeeShop {
+    rankdir=LR;
+    node [shape=none];
+    
+    // Entities
+    Admin [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD BGCOLOR="#4A90E2"><FONT COLOR="white"><B>Admin</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT">+ ID (PK): int</TD></TR>
+            <TR><TD ALIGN="LEFT">+ fullname: varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ username: varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ password: varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ Last_Update: datetime</TD></TR>
+        </TABLE>>];
+    
+    Employee [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD BGCOLOR="#4A90E2"><FONT COLOR="white"><B>Employee</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT">+ ID (PK): int</TD></TR>
+            <TR><TD ALIGN="LEFT">+ fullname: varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ username: varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ password: varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ Last_Update: datetime</TD></TR>
+        </TABLE>>];
+    
+    Guest [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD BGCOLOR="#4A90E2"><FONT COLOR="white"><B>Guest</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT">+ ID (PK): int</TD></TR>
+            <TR><TD ALIGN="LEFT">+ fullname: varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ username: varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ password: varchar(255)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ Last_Update: datetime</TD></TR>
+        </TABLE>>];
+    
+    Coffee [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD BGCOLOR="#4A90E2"><FONT COLOR="white"><B>Coffee</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT">+ ID (PK): int</TD></TR>
+            <TR><TD ALIGN="LEFT">+ name: varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ type: varchar(25)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ discount: int</TD></TR>
+            <TR><TD ALIGN="LEFT">+ in_stock: int</TD></TR>
+            <TR><TD ALIGN="LEFT">+ price: int</TD></TR>
+            <TR><TD ALIGN="LEFT">+ Last_Update: datetime</TD></TR>
+        </TABLE>>];
+    
+    Inventory [label=<
+        <TABLE BORDER="0" CELLBORDER="1" CELLSPACING="0">
+            <TR><TD BGCOLOR="#4A90E2"><FONT COLOR="white"><B>Inventory</B></FONT></TD></TR>
+            <TR><TD ALIGN="LEFT">+ bill_number (PK): varchar(20)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ date: datetime</TD></TR>
+            <TR><TD ALIGN="LEFT">+ cashier_name: varchar(50)</TD></TR>
+            <TR><TD ALIGN="LEFT">+ contact: int</TD></TR>
+            <TR><TD ALIGN="LEFT">+ bill_details: text</TD></TR>
+            <TR><TD ALIGN="LEFT">+ CoffeeID (FK): int</TD></TR>
+            <TR><TD ALIGN="LEFT">+ GuestID (FK): int</TD></TR>
+            <TR><TD ALIGN="LEFT">+ EmployeeID (FK): int</TD></TR>
+        </TABLE>>];
+    
+    // Relationships with clear "one to many" labels
+    edge [arrowhead=crow];
+    Admin -> Employee [label="one admin manages many employees"];
+    Guest -> Inventory [label="one guest creates many orders"];
+    Coffee -> Inventory [label="one coffee type in many orders"];
+    Employee -> Inventory [label="one employee processes many orders"];
+    
+    // Layout
+    {rank=same; Admin Employee Guest}
+    {rank=same; Coffee Inventory}
+}

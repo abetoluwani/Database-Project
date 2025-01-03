@@ -354,18 +354,14 @@ class SecondPage:
                     if coffee_id.get() == "":
                         messagebox.showerror("Failed", "Coffee Number( # ) can't be empty")
                     else:
-                        conn = sqlite3.connect("./Database/CoffeeShop.db")
-                        cur = conn.cursor()
-                        cur.execute("INSERT INTO Coffee_Category values(?,?,?,?,?,?)",
-                                    (coffee_id.get(), coffee.get(), type.get(), discount.get(), in_stock.get(), price.get()))
-                        conn.commit()
-                        conn.close()
+                        # conn = sqlite3.connect("./Database/CoffeeShop.db")
+                        # cur = conn.cursor()
+                        # cur.execute("INSERT INTO Coffee_Category(coffee_name, type, discount, in_stock, coffee_price) VALUES(?,?,?,?,?)",
+                        #             (coffee.get(), type.get(), discount.get(), in_stock.get(), price.get()))
+                        # conn.commit()
+                        # conn.close()
                         show_all()
                         messagebox.showinfo("Success", "Coffee Records Added Successfully")
-
-
-
-
 
                 def delete_records():
                     try:
@@ -375,13 +371,13 @@ class SecondPage:
                         ask = messagebox.askyesno("Warning",
                                                   f"Are you sure you want to delete records of {tree_view_values}")
                         if ask is True:
-                            conn = sqlite3.connect("./Database/CoffeeShop.db")
-                            cur = conn.cursor()
-                            cur.execute("DELETE FROM Coffee_Category where coffee_id=?", [coffee_id.get()])
-                            conn.commit()
+                            # conn = sqlite3.connect("./Database/CoffeeShop.db")
+                            # cur = conn.cursor()
+                            # cur.execute("DELETE FROM Coffee_Category where coffee_id=?", [coffee_id.get()])
+                            # conn.commit()
                             show_all()
                             clear_all()
-                            conn.close()
+                            # conn.close()
                             messagebox.showinfo("Success",
                                                 f" {tree_view_values} records has been deleted Successfully")
                         else:
@@ -405,6 +401,9 @@ class SecondPage:
                     # self.Reset()
                     messagebox.showinfo("Success", "Coffee Record updated Successfully")
 
+                def restricted_action():
+                    messagebox.showwarning("Access Denied", "You need admin access to perform this action.")
+
                 self.button3 = Button(coverFrame3)
                 self.button3.place(relx=0.539, rely=0.849, width=86, height=25)
                 self.button3.configure(relief="flat")
@@ -416,7 +415,7 @@ class SecondPage:
                 self.button3.configure(font="-family {Poppins SemiBold} -size 10")
                 self.button3.configure(borderwidth="0")
                 self.button3.configure(text="""Delete""")
-                self.button3.configure(command=delete_records)
+                self.button3.configure(command=restricted_action)
 
                 self.button4 = Button(coverFrame3)
                 self.button4.place(relx=0.059, rely=0.849, width=84, height=25)
@@ -429,7 +428,7 @@ class SecondPage:
                 self.button4.configure(font="-family {Poppins SemiBold} -size 10")
                 self.button4.configure(borderwidth="0")
                 self.button4.configure(text="""Add""")
-                self.button4.configure(command=add_coffee)
+                self.button4.configure(command=restricted_action)
 
                 self.button5 = Button(coverFrame3)
                 self.button5.place(relx=0.059, rely=0.929, width=86, height=25)
@@ -442,7 +441,7 @@ class SecondPage:
                 self.button5.configure(font="-family {Poppins SemiBold} -size 10")
                 self.button5.configure(borderwidth="0")
                 self.button5.configure(text="""Update""")
-                self.button5.configure(command=update)
+                self.button5.configure(command=restricted_action)
 
                 def clear_all():
                     coffee_id.set("")
@@ -1293,22 +1292,19 @@ class SecondPage:
                             self.Scrolledtext1.insert('insert', s3)
                             self.Scrolledtext1.insert(END, cust_num.get())
 
-
-
-
-                            with sqlite3.connect("./Database/CoffeeShop.db") as db:
-                                cur = db.cursor()
-                            insert = (
-                                "INSERT INTO Inventory(bill_number, date, cashier_name, contact, bill_details) VALUES(?,?,?,?,?)"
-                            )
-                            cur.execute(insert, [cust_new_bill.get(), bill_date.get(), cust_name.get(), cust_num.get(), self.Scrolledtext1.get('1.0', END)])
-                            db.commit()
+                            #with sqlite3.connect("./Database/CoffeeShop.db") as db:
+                            #    cur = db.cursor()
+                            #insert = (
+                            #    "INSERT INTO Inventory(bill_number, date, cashier_name, contact, bill_details) VALUES(?,?,?,?,?)"
+                            #)
+                            #cur.execute(insert, [cust_new_bill.get(), bill_date.get(), cust_name.get(), cust_num.get(), self.Scrolledtext1.get('1.0', END)])
+                            #db.commit()
                             #print(self.cart.items)
-                            print(self.cart.allCart())
-                            for name, qty in self.cart.dictionary.items():
-                                update_qty = "UPDATE Coffee_Category SET in_stock = in_stock - ? WHERE coffee_name = ?"
-                                cur.execute(update_qty, [qty, name])
-                                db.commit()
+                            #print(self.cart.allCart())
+                            #for name, qty in self.cart.dictionary.items():
+                            #    update_qty = "UPDATE Coffee_Category SET in_stock = in_stock - ? WHERE coffee_name = ?"
+                            #    cur.execute(update_qty, [qty, name])
+                            #    db.commit()
                             messagebox.showinfo("Success!!", "Bill Generated", parent=biller)
                             self.entry1.configure(state="disabled", background="#ffffff", foreground="#000000")
                             self.entry2.configure(state="disabled", background="#ffffff", foreground="#000000")
