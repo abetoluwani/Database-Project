@@ -13,6 +13,7 @@ import os
 import tempfile
 import AccountSystem
 import Dashboard
+from database import db
 # ============================================
 
 
@@ -38,9 +39,6 @@ class SecondPage:
         cust_new_bill = StringVar()
         cust_search_bill = StringVar()
         bill_date = StringVar()
-
-        with sqlite3.connect("./Database/CoffeeShop.db") as db:
-            cur = db.cursor()
 
         def random_bill_number(stringLength):
             lettersAndDigits = string.ascii_letters.upper() + string.digits
@@ -326,18 +324,11 @@ class SecondPage:
                 #                TKINTER     TREE VIEW
                 # =====================================================================================================================
                 def show_all():
-                    conn = sqlite3.connect("./Database/CoffeeShop.db")
-                    cur = conn.cursor()
-                    cur.execute("select * from Coffee_Category")
-                    rows = cur.fetchall()
+                    rows = db.execute_query("SELECT * FROM Coffee_Category")
                     if len(rows) != 0:
                         coffee_tree.delete(*coffee_tree.get_children())
                         for row in rows:
                             coffee_tree.insert('', END, values=row)
-                        conn.commit()
-                    conn.close()
-
-                    # ======== Fetch =========
 
                 def coffee_info(ev):
                     viewInfo = coffee_tree.focus()
@@ -354,12 +345,6 @@ class SecondPage:
                     if coffee_id.get() == "":
                         messagebox.showerror("Failed", "Coffee Number( # ) can't be empty")
                     else:
-                        # conn = sqlite3.connect("./Database/CoffeeShop.db")
-                        # cur = conn.cursor()
-                        # cur.execute("INSERT INTO Coffee_Category(coffee_name, type, discount, in_stock, coffee_price) VALUES(?,?,?,?,?)",
-                        #             (coffee.get(), type.get(), discount.get(), in_stock.get(), price.get()))
-                        # conn.commit()
-                        # conn.close()
                         show_all()
                         messagebox.showinfo("Success", "Coffee Records Added Successfully")
 
@@ -371,13 +356,8 @@ class SecondPage:
                         ask = messagebox.askyesno("Warning",
                                                   f"Are you sure you want to delete records of {tree_view_values}")
                         if ask is True:
-                            # conn = sqlite3.connect("./Database/CoffeeShop.db")
-                            # cur = conn.cursor()
-                            # cur.execute("DELETE FROM Coffee_Category where coffee_id=?", [coffee_id.get()])
-                            # conn.commit()
                             show_all()
                             clear_all()
-                            # conn.close()
                             messagebox.showinfo("Success",
                                                 f" {tree_view_values} records has been deleted Successfully")
                         else:
@@ -389,16 +369,11 @@ class SecondPage:
                                              "There is some error deleting the data\n Make sure you have Selected the data")
 
                 def update():
-                    conn = sqlite3.connect("./Database/CoffeeShop.db")
-                    cur = conn.cursor()
-                    cur.execute(
-                        "UPDATE Coffee_Category set coffee_name=?,type=?,discount=?,in_stock=?,coffee_price=? where "
-                        "coffee_id=?",
-                        (coffee.get(), type.get(), discount.get(), in_stock.get(), price.get(), coffee_id.get()))
-                    conn.commit()
-                    conn.close()
+                    db.execute_update(
+                        "UPDATE Coffee_Category SET coffee_name=?, type=?, discount=?, in_stock=?, coffee_price=? WHERE coffee_id=?",
+                        (coffee.get(), type.get(), discount.get(), in_stock.get(), price.get(), coffee_id.get())
+                    )
                     show_all()
-                    # self.Reset()
                     messagebox.showinfo("Success", "Coffee Record updated Successfully")
 
                 def restricted_action():
@@ -993,8 +968,8 @@ class SecondPage:
                 self.combo1.place(relx=0.035, rely=0.440, width=477, height=26)
 
                 find_category = "SELECT type FROM Coffee_Category"
-                cur.execute(find_category)
-                result1 = cur.fetchall()
+                db.execute_query(find_category)
+                result1 = db.fetchall()
                 cat = []
                 for i in range(len(result1)):
                     if (result1[i][0] not in cat):
@@ -1052,8 +1027,8 @@ class SecondPage:
                 self.combo2.set('')
                 self.combo3.set('')
                 find_subcat = "SELECT discount FROM Coffee_Category WHERE type = ?"
-                cur.execute(find_subcat, [self.combo1.get()])
-                result2 = cur.fetchall()
+                db.execute_query(find_subcat, [self.combo1.get()])
+                result2 = db.fetchall()
                 subcat = []
                 for j in range(len(result2)):
                     if (result2[j][0] not in subcat):
@@ -1067,8 +1042,8 @@ class SecondPage:
                 self.combo3.configure(state="readonly")
                 self.combo3.set('')
                 find_product = "SELECT coffee_name FROM Coffee_Category WHERE type = ? and discount = ?"
-                cur.execute(find_product, [self.combo1.get(), self.combo2.get()])
-                result3 = cur.fetchall()
+                db.execute_query(find_product, [self.combo1.get(), self.combo2.get()])
+                result3 = db.fetchall()
                 pro = []
                 for k in range(len(result3)):
                     pro.append(result3[k][0])
@@ -1086,8 +1061,8 @@ class SecondPage:
 
                 product_name = self.combo3.get()
                 find_qty = "SELECT in_stock FROM Coffee_Category WHERE coffee_name = ?"
-                cur.execute(find_qty, [product_name])
-                results = cur.fetchone()
+                db.execute_query(find_qty, [product_name])
+                results = db.fetchone()
                 self.qty_label.configure(text="In Stock: {}".format(results[0]))
                 self.qty_label.configure(background="#ffffff")
                 self.qty_label.configure(foreground="#333333")
@@ -1102,8 +1077,8 @@ class SecondPage:
                     if (product_name != ""):
                         product_qty = self.entry4.get()
                         find_mrp = "SELECT coffee_price, in_stock FROM Coffee_Category WHERE coffee_name = ?"
-                        cur.execute(find_mrp, [product_name])
-                        results = cur.fetchall()
+                        db.execute_query(find_mrp, [product_name])
+                        results = db.fetchall()
                         stock = results[0][1]
                         mrp = results[0][0]
                         if product_qty.isdigit() == True:
@@ -1140,8 +1115,8 @@ class SecondPage:
                     if (product_name != ""):
                         product_qty = self.entry4.get()
                         find_mrp = "SELECT coffee_price, in_stock, coffee_id FROM Coffee_Category WHERE coffee_name = ?"
-                        cur.execute(find_mrp, [product_name])
-                        results = cur.fetchall()
+                        db.execute_query(find_mrp, [product_name])
+                        results = db.fetchall()
                         stock = results[0][1]
                         mrp = results[0][0]
                         if product_qty.isdigit() == True:
@@ -1362,8 +1337,8 @@ class SecondPage:
 
             def search_bill(self):
                 find_bill = "SELECT * FROM Inventory WHERE bill_number = ?"
-                cur.execute(find_bill, [cust_search_bill.get().rstrip()])
-                results = cur.fetchall()
+                db.execute_query(find_bill, [cust_search_bill.get().rstrip()])
+                results = db.fetchall()
                 if results:
                     # self.clear_bill()
                     self.wel_bill()

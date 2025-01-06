@@ -15,6 +15,7 @@ import AccountSystem
 import Accounts
 import admin_start
 import Inventory
+from database import db
 # ============================================
 
 
@@ -48,8 +49,8 @@ class SecondPage:
         cust_search_bill = StringVar()
         bill_date = StringVar()
 
-        with sqlite3.connect("./Database/CoffeeShop.db") as db:
-            cur = db.cursor()
+        # with sqlite3.connect("./Database/CoffeeShop.db") as db:
+        #     cur = db.cursor()
 
         def random_bill_number(stringLength):
             lettersAndDigits = string.ascii_letters.upper() + string.digits
@@ -352,18 +353,11 @@ class SecondPage:
                 #                TKINTER     TREE VIEW
                 # =====================================================================================================================
                 def show_all():
-                    conn = sqlite3.connect("./Database/CoffeeShop.db")
-                    cur = conn.cursor()
-                    cur.execute("select * from Coffee_Category")
-                    rows = cur.fetchall()
+                    rows = db.execute_query("SELECT * FROM Coffee_Category")
                     if len(rows) != 0:
                         coffee_tree.delete(*coffee_tree.get_children())
                         for row in rows:
                             coffee_tree.insert('', END, values=row)
-                        conn.commit()
-                    conn.close()
-
-                    # ======== Fetch =========
 
                 def coffee_info(ev):
                     viewInfo = coffee_tree.focus()
@@ -377,11 +371,8 @@ class SecondPage:
                     price.set(row[5])
 
                 def get_next_coffee_id():
-                    conn = sqlite3.connect("./Database/CoffeeShop.db")
-                    cur = conn.cursor()
-                    cur.execute("SELECT coffee_id FROM Coffee_Category ORDER BY coffee_id")
-                    ids = cur.fetchall()
-                    conn.close()
+                    rows = db.execute_query("SELECT coffee_id FROM Coffee_Category ORDER BY coffee_id")
+                    ids = rows
                     if not ids:
                         return 1
                     last_id = 0
@@ -397,12 +388,8 @@ class SecondPage:
                         messagebox.showerror("Failed", "Coffee Name can't be empty")
                     else:
                         coffee_id = get_next_coffee_id()
-                        conn = sqlite3.connect("./Database/CoffeeShop.db")
-                        cur = conn.cursor()
-                        cur.execute("INSERT INTO Coffee_Category(coffee_id, coffee_name, type, discount, in_stock, coffee_price) VALUES(?,?,?,?,?,?)",
+                        db.execute_update("INSERT INTO Coffee_Category(coffee_id, coffee_name, type, discount, in_stock, coffee_price) VALUES(?,?,?,?,?,?)",
                                     (coffee_id, coffee.get(), type_var.get(), discount_var.get(), in_stock.get(), price.get()))
-                        conn.commit()
-                        conn.close()
                         show_all()
                         messagebox.showinfo("Success", "Coffee Records Added Successfully")
                         clear_all()
@@ -415,13 +402,9 @@ class SecondPage:
                         ask = messagebox.askyesno("Warning",
                                                   f"Are you sure you want to delete records of {tree_view_values}")
                         if ask is True:
-                            conn = sqlite3.connect("./Database/CoffeeShop.db")
-                            cur = conn.cursor()
-                            cur.execute("DELETE FROM Coffee_Category where coffee_id=?", [coffee_id.get()])
-                            conn.commit()
+                            db.execute_update("DELETE FROM Coffee_Category where coffee_id=?", [coffee_id.get()])
                             show_all()
                             clear_all()
-                            conn.close()
                             messagebox.showinfo("Success",
                                                 f" {tree_view_values} records has been deleted Successfully")
                         else:
@@ -433,14 +416,10 @@ class SecondPage:
                                              "There is some error deleting the data\n Make sure you have Selected the data")
 
                 def update():
-                    conn = sqlite3.connect("./Database/CoffeeShop.db")
-                    cur = conn.cursor()
-                    cur.execute(
+                    db.execute_update(
                         "UPDATE Coffee_Category set coffee_name=?,type=?,discount=?,in_stock=?,coffee_price=? where "
                         "coffee_id=?",
                         (coffee.get(), type_var.get(), discount_var.get(), in_stock.get(), price.get(), coffee_id.get()))
-                    conn.commit()
-                    conn.close()
                     show_all()
                     # self.Reset()
                     messagebox.showinfo("Success", "Coffee Record updated Successfully")
@@ -1116,12 +1095,11 @@ class SecondPage:
                 self.combo1.place(relx=0.035, rely=0.440, width=477, height=26)
 
                 find_category = "SELECT type FROM Coffee_Category"
-                cur.execute(find_category)
-                result1 = cur.fetchall()
+                rows = db.execute_query(find_category)
                 cat = []
-                for i in range(len(result1)):
-                    if (result1[i][0] not in cat):
-                        cat.append(result1[i][0])
+                for i in range(len(rows)):
+                    if (rows[i][0] not in cat):
+                        cat.append(rows[i][0])
 
                 self.combo1.configure(values=cat)
                 self.combo1.configure(state="readonly")
@@ -1175,12 +1153,11 @@ class SecondPage:
                 self.combo2.set('')
                 self.combo3.set('')
                 find_subcat = "SELECT discount FROM Coffee_Category WHERE type = ?"
-                cur.execute(find_subcat, [self.combo1.get()])
-                result2 = cur.fetchall()
+                rows = db.execute_query(find_subcat, [self.combo1.get()])
                 subcat = []
-                for j in range(len(result2)):
-                    if (result2[j][0] not in subcat):
-                        subcat.append(result2[j][0])
+                for j in range(len(rows)):
+                    if (rows[j][0] not in subcat):
+                        subcat.append(rows[j][0])
 
                 self.combo2.configure(values=subcat)
                 self.combo2.bind("<<ComboboxSelected>>", self.get_subcat)
@@ -1190,11 +1167,10 @@ class SecondPage:
                 self.combo3.configure(state="readonly")
                 self.combo3.set('')
                 find_product = "SELECT coffee_name FROM Coffee_Category WHERE type = ? and discount = ?"
-                cur.execute(find_product, [self.combo1.get(), self.combo2.get()])
-                result3 = cur.fetchall()
+                rows = db.execute_query(find_product, [self.combo1.get(), self.combo2.get()])
                 pro = []
-                for k in range(len(result3)):
-                    pro.append(result3[k][0])
+                for k in range(len(rows)):
+                    pro.append(rows[k][0])
 
                 self.combo3.configure(values=pro)
                 self.combo3.bind("<<ComboboxSelected>>", self.show_qty)
@@ -1209,9 +1185,8 @@ class SecondPage:
 
                 product_name = self.combo3.get()
                 find_qty = "SELECT in_stock FROM Coffee_Category WHERE coffee_name = ?"
-                cur.execute(find_qty, [product_name])
-                results = cur.fetchone()
-                self.qty_label.configure(text="In Stock: {}".format(results[0]))
+                rows = db.execute_query(find_qty, [product_name])
+                self.qty_label.configure(text="In Stock: {}".format(rows[0][0]))
                 self.qty_label.configure(background="#ffffff")
                 self.qty_label.configure(foreground="#333333")
 
@@ -1225,10 +1200,9 @@ class SecondPage:
                     if (product_name != ""):
                         product_qty = self.entry4.get()
                         find_mrp = "SELECT coffee_price, in_stock FROM Coffee_Category WHERE coffee_name = ?"
-                        cur.execute(find_mrp, [product_name])
-                        results = cur.fetchall()
-                        stock = results[0][1]
-                        mrp = results[0][0]
+                        rows = db.execute_query(find_mrp, [product_name])
+                        stock = rows[0][1]
+                        mrp = rows[0][0]
                         if product_qty.isdigit() == True:
                             if (stock - int(product_qty)) >= 0:
                                 sp = mrp * int(product_qty)
@@ -1263,13 +1237,12 @@ class SecondPage:
                     if (product_name != ""):
                         product_qty = self.entry4.get()
                         find_mrp = "SELECT coffee_price, in_stock, coffee_id FROM Coffee_Category WHERE coffee_name = ?"
-                        cur.execute(find_mrp, [product_name])
-                        results = cur.fetchall()
-                        stock = results[0][1]
-                        mrp = results[0][0]
+                        rows = db.execute_query(find_mrp, [product_name])
+                        stock = rows[0][1]
+                        mrp = rows[0][0]
                         if product_qty.isdigit() == True:
                             if (stock - int(product_qty)) >= 0:
-                                sp = results[0][0] * int(product_qty)
+                                sp = rows[0][0] * int(product_qty)
                                 item = CoffeeItem(product_name, mrp, int(product_qty))
                                 self.cart.add_item(item)
                                 self.Scrolledtext1.configure(state="normal")
@@ -1418,19 +1391,14 @@ class SecondPage:
 
 
 
-                            with sqlite3.connect("./Database/CoffeeShop.db") as db:
-                                cur = db.cursor()
-                            insert = (
+                            db.execute_update(
                                 "INSERT INTO Inventory(date, cashier_name, contact, bill_details) VALUES(?,?,?,?)"
-                            )
-                            cur.execute(insert, [bill_date.get(), cust_name.get(), cust_num.get(), self.Scrolledtext1.get('1.0', END)])
-                            db.commit()
+                            , [bill_date.get(), cust_name.get(), cust_num.get(), self.Scrolledtext1.get('1.0', END)])
                             #print(self.cart.items)
                             print(self.cart.allCart())
                             for name, qty in self.cart.dictionary.items():
                                 update_qty = "UPDATE Coffee_Category SET in_stock = in_stock - ? WHERE coffee_name = ?"
-                                cur.execute(update_qty, [qty, name])
-                                db.commit()
+                                db.execute_update(update_qty, [qty, name])
                             messagebox.showinfo("Success!!", "Bill Generated", parent=biller)
                             self.entry1.configure(state="disabled", background="#ffffff", foreground="#000000")
                             self.entry2.configure(state="disabled", background="#ffffff", foreground="#000000")
@@ -1488,26 +1456,25 @@ class SecondPage:
 
             def search_bill(self):
                 find_bill = "SELECT * FROM Inventory WHERE bill_number = ?"
-                cur.execute(find_bill, [cust_search_bill.get().rstrip()])
-                results = cur.fetchall()
-                if results:
+                rows = db.execute_query(find_bill, [cust_search_bill.get().rstrip()])
+                if rows:
                     # self.clear_bill()
                     self.wel_bill()
-                    self.name_message.insert(END, results[0][2])
+                    self.name_message.insert(END, rows[0][2])
                     self.name_message.configure(state="disabled")
 
-                    self.num_message.insert(END, results[0][3])
+                    self.num_message.insert(END, rows[0][3])
                     self.num_message.configure(state="disabled")
 
-                    self.bill_message.insert(END, results[0][0])
+                    self.bill_message.insert(END, rows[0][0])
                     self.bill_message.configure(state="disabled")
 
                     self.Scrolledtext1.delete(1.0, END)
-                    self.bill_date_message.insert(END, results[0][1])
+                    self.bill_date_message.insert(END, rows[0][1])
                     self.bill_date_message.configure(state="disabled")
 
                     self.Scrolledtext1.configure(state="normal")
-                    self.Scrolledtext1.insert(END, results[0][4])
+                    self.Scrolledtext1.insert(END, rows[0][4])
                     self.Scrolledtext1.configure(state="disabled")
 
                     #self.entry1.configure(state="disabled", disabledbackground="#ffffff", disabledforeground="#000000")

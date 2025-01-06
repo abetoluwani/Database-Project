@@ -7,6 +7,7 @@ import Employee
 import admin
 import Dashboard
 import admin_start
+from database import db
 
 
 class AccountPage:
@@ -154,37 +155,24 @@ class AccountPage:
         Password = StringVar()
 
         def login_all():
-            # Admin
-            conn1 = sqlite3.connect("./Database/CoffeeShop.db")
-            cursor1 = conn1.cursor()
-            find_user1 = 'SELECT * FROM Admin_Account WHERE admin_username = ? and admin_password = ?'
-            cursor1.execute(find_user1, [(username_entry.get()), (password_entry.get())])
-
-            # Guest
-            conn2 = sqlite3.connect("./Database/CoffeeShop.db")
-            cursor2 = conn2.cursor()
-            find_user2 = 'SELECT * FROM Guest_Account WHERE guest_username = ? and guest_password = ?'
-            cursor2.execute(find_user2, [(username_entry.get()), (password_entry.get())])
-
-            # Employee
-            conn3 = sqlite3.connect("./Database/CoffeeShop.db")
-            cursor3 = conn3.cursor()
-            find_user3 = 'SELECT * FROM Employee_Account WHERE employee_username = ? and employee_password = ?'
-            cursor3.execute(find_user3, [(username_entry.get()), (password_entry.get())])
-
-            result3 = cursor3.fetchall()
-            result2 = cursor2.fetchall()
-            result1 = cursor1.fetchall()
-
-            if result2:
-                messagebox.showinfo("Success", 'Logged in Successfully,\n\nClick "OK" to continue.')
-                open_guest()
-            elif result1:
+            username = username_entry.get()
+            password = password_entry.get()
+            
+            # Check admin credentials
+            admin_results = db.execute_query("SELECT * FROM Admin_Account WHERE admin_username = ? AND admin_password = ?", (username, password))
+            if admin_results:
                 messagebox.showinfo("Success", 'Logged in Successfully,\n\nClick "OK" to continue.')
                 open_admin()
-            elif result3:
+            # Check employee credentials
+            employee_results = db.execute_query("SELECT * FROM Employee_Account WHERE employee_username = ? AND employee_password = ?", (username, password))
+            if employee_results:
                 messagebox.showinfo("Success", 'Logged in Successfully,\n\nClick "OK" to continue.')
                 open_employee()
+            # Check guest credentials
+            guest_results = db.execute_query("SELECT * FROM Guest_Account WHERE guest_username = ? AND guest_password = ?", (username, password))
+            if guest_results:
+                messagebox.showinfo("Success", 'Logged in Successfully,\n\nClick "OK" to continue.')
+                open_guest()
             else:
                 messagebox.showerror("Failed", "Wrong Login details, please try again.")
 
@@ -289,7 +277,7 @@ class AccountPage:
             # ========= DATABASE CONNECTION FOR FORGOT PASSWORD=====================
             def change_password():
                 db = sqlite3.connect("./Database/CoffeeShop.db")
-                cur = db.cursor()
+                cur = db.cursor() # this is the cursor for the database that will be used for the queries
 
                 #insert = '''update Guest_Account set guest_password=? where guest_username=? '''
                 #cur.execute(insert, [new_password_entry.get(), username_entry3.get(), ])
@@ -365,13 +353,10 @@ class AccountPage:
 
             if check_counter == 3:
                 try:
-                    connection = sqlite3.connect("./Database/CoffeeShop.db")
-                    cur = connection.cursor()
-                    cur.execute("INSERT INTO Guest_Account(guest_fullname, guest_username, guest_password) VALUES(?,?,?)",
-                                (FullName.get(), Username2.get(), Password2.get()))
-
-                    connection.commit()
-                    connection.close()
+                    db.execute_update(
+                        "INSERT INTO Guest_Account (guest_fullname, guest_username, guest_password) VALUES (?, ?, ?)",
+                        (FullName.get(), Username2.get(), Password2.get())
+                    )
                     messagebox.showinfo("Success", 'New account created successfully\n\nClick "OK" to continue')
                     open_guest()
 

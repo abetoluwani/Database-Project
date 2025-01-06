@@ -8,7 +8,7 @@ import admin_start
 import AccountSystem
 import admin
 import Inventory
-
+from database import db
 
 class InventoryPage:
     def __init__(self, account_window):
@@ -187,16 +187,11 @@ class InventoryPage:
         guest_id_entry.place(relx=0.050, rely=0.169)
 
         def show_all_guest():
-            conn = sqlite3.connect("./Database/CoffeeShop.db")
-            cur = conn.cursor()
-            cur.execute("select * from Guest_Account")
-            rows = cur.fetchall()
+            rows = db.execute_query("SELECT * FROM Guest_Account")
             if len(rows) != 0:
                 self.tree.delete(*self.tree.get_children())
                 for row in rows:
                     self.tree.insert('', END, values=row)
-                conn.commit()
-            conn.close()
 
         def upgrade():
             conn = sqlite3.connect("./Database/CoffeeShop.db")

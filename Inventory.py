@@ -7,7 +7,7 @@ import os
 import admin_start
 import AccountSystem
 import Accounts
-
+from database import db
 
 class InventoryPage:
     def __init__(self, Manage_window):
@@ -203,18 +203,11 @@ class InventoryPage:
         #                TKINTER     TREE VIEW
         # =====================================================================================================================
         def show_all():
-            conn = sqlite3.connect("./Database/CoffeeShop.db")
-            cur = conn.cursor()
-            cur.execute("select * from Inventory")
-            rows = cur.fetchall()
+            rows = db.execute_query("SELECT * FROM Inventory")
             if len(rows) != 0:
                 coffee_tree.delete(*coffee_tree.get_children())
                 for row in rows:
                     coffee_tree.insert('', END, values=row)
-                conn.commit()
-            conn.close()
-
-            # ======== Fetch =========
 
         def coffee_info(ev):
             viewInfo = coffee_tree.focus()
@@ -243,14 +236,9 @@ class InventoryPage:
                                           f"Are you sure you want to delete records of {tree_view_values}")
                 if ask is True:
 
-                    conn = sqlite3.connect("./Database/CoffeeShop.db")
-                    cur = conn.cursor()
-                    delete = "DELETE FROM INVENTORY WHERE bill_number = ?"
-                    cur.execute(delete, [coffeName_entry.get()])
-                    conn.commit()
+                    db.execute_update("DELETE FROM INVENTORY WHERE bill_number = ?", (coffeName_entry.get(),))
                     show_all()
                     clear_all()
-                    conn.close()
                     messagebox.showinfo("Success", f" {tree_view_values} records has been deleted Successfully")
                 else:
                     pass
